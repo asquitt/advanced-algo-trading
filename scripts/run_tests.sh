@@ -15,14 +15,27 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+# Load test environment variables
+if [ -f .env.test ]; then
+    echo "Loading test environment variables from .env.test..."
+    export $(cat .env.test | grep -v '^#' | xargs)
+else
+    # Set minimal required environment variables for testing
+    export GROQ_API_KEY=${GROQ_API_KEY:-test_groq_key}
+    export ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-test_anthropic_key}
+    export ALPACA_API_KEY=${ALPACA_API_KEY:-test_alpaca_key}
+    export ALPACA_SECRET_KEY=${ALPACA_SECRET_KEY:-test_alpaca_secret}
+fi
+
 # Function to run tests
 run_tests() {
     local test_type=$1
-    local test_args=$2
+    shift
+    local test_args="$@"
 
     echo -e "${YELLOW}Running $test_type tests...${NC}"
 
-    if pytest $test_args; then
+    if eval "pytest $test_args"; then
         echo -e "${GREEN}✅ $test_type tests passed!${NC}"
         return 0
     else
@@ -54,9 +67,19 @@ case "${1:-all}" in
         run_tests "HFT" "tests/test_hft_techniques.py -v"
         ;;
 
+    regression)
+        echo "Running regression tests..."
+        run_tests "Regression" "tests/test_regression.py -v"
+        ;;
+
+    e2e)
+        echo "Running end-to-end tests..."
+        run_tests "E2E" "tests/test_e2e.py -v"
+        ;;
+
     fast)
         echo "Running fast tests only (excluding slow tests)..."
-        run_tests "Fast" "tests/ -v -m 'not slow'"
+        run_tests "Fast" "tests/ -v -m \"not slow\""
         ;;
 
     coverage)
@@ -87,6 +110,13 @@ case "${1:-all}" in
         echo ""
 
         run_tests "Integration" "tests/test_integration.py -v" || true
+        echo ""
+
+        run_tests "Regression" "tests/test_regression.py -v" || true
+        echo ""
+
+        echo "Running end-to-end tests..."
+        run_tests "E2E" "tests/test_e2e.py -v" || true
         echo ""
 
         echo "Running performance tests (may take a while)..."
@@ -120,7 +150,9 @@ case "${1:-all}" in
         echo "  integration - Run integration tests"
         echo "  performance - Run performance tests"
         echo "  hft         - Run HFT technique tests"
-        echo "  fast        - Run fast tests only"
+        echo "  regression  - Run regression tests (prevent old bugs)"
+        echo "  e2e         - Run end-to-end tests (full workflows)"
+        echo "  fast        - Run fast tests only (exclude slow)"
         echo "  coverage    - Run tests with coverage report"
         echo "  watch       - Run tests in watch mode"
         echo "  help        - Show this help message"
@@ -128,6 +160,8 @@ case "${1:-all}" in
         echo "Examples:"
         echo "  $0              # Run all tests"
         echo "  $0 unit         # Run unit tests"
+        echo "  $0 regression   # Run regression tests"
+        echo "  $0 e2e          # Run end-to-end tests"
         echo "  $0 coverage     # Generate coverage report"
         ;;
 
