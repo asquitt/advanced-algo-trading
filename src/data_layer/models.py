@@ -24,6 +24,14 @@ class OrderSide(str, Enum):
     SELL = "sell"
 
 
+class OrderType(str, Enum):
+    """Type of order to execute."""
+    MARKET = "market"
+    LIMIT = "limit"
+    STOP = "stop"
+    STOP_LIMIT = "stop_limit"
+
+
 class OrderStatus(str, Enum):
     """Status of trade orders."""
     PENDING = "pending"

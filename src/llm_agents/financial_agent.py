@@ -184,8 +184,19 @@ Be concise and analytical. Focus on facts over speculation.
 
             parsed = json.loads(json_str)
 
-            # Normalize score to 0-1 range
-            score = parsed.get("score", 50) / 100.0
+            # Handle null or non-dict responses
+            if not isinstance(parsed, dict):
+                raise ValueError(f"Expected dict, got {type(parsed)}")
+
+            # Normalize score to 0-1 range with type safety
+            raw_score = parsed.get("score", 50)
+            # Convert to float if it's a string
+            if isinstance(raw_score, str):
+                try:
+                    raw_score = float(raw_score)
+                except (ValueError, TypeError):
+                    raw_score = 50
+            score = float(raw_score) / 100.0
 
             return {
                 "score": score,
@@ -203,7 +214,7 @@ Be concise and analytical. Focus on facts over speculation.
                 "analysis_date": datetime.utcnow().isoformat(),
             }
 
-        except json.JSONDecodeError as e:
+        except (json.JSONDecodeError, ValueError, KeyError, TypeError) as e:
             app_logger.error(f"Failed to parse financial analysis JSON: {e}")
             # Fallback: return basic structure
             return {

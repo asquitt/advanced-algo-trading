@@ -10,6 +10,12 @@ from datetime import datetime
 import os
 import sys
 
+# Set test environment variables BEFORE any imports
+os.environ["GROQ_API_KEY"] = "test_groq_key"
+os.environ["ANTHROPIC_API_KEY"] = "test_anthropic_key"
+os.environ["ALPACA_API_KEY"] = "test_alpaca_key"
+os.environ["ALPACA_SECRET_KEY"] = "test_alpaca_secret"
+
 # Add src to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 

@@ -22,9 +22,14 @@ import uvicorn
 from src.llm_agents import EnsembleStrategy
 from src.trading_engine import executor, broker
 from src.data_layer.models import TradingSignal, Trade, Position, PortfolioState
+from src.data_layer.market_data import market_data  # For E2E test mocking
 from src.utils.config import settings
 from src.utils.logger import app_logger
 from src.data_layer.kafka_stream import KafkaStreamProducer
+
+# Initialize components for E2E testing
+strategy = EnsembleStrategy()
+kafka_producer = KafkaStreamProducer()
 
 # Initialize FastAPI app
 app = FastAPI(

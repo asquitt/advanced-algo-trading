@@ -18,7 +18,7 @@ class TestEndToEndSignalGeneration:
 
     @patch('src.llm_agents.financial_agent.market_data')
     @patch('src.llm_agents.sentiment_agent.market_data')
-    @patch.object('src.llm_agents.base_agent.BaseLLMAgent', '_call_llm')
+    @patch('src.llm_agents.base_agent.BaseLLMAgent._call_llm')
     def test_full_signal_pipeline(self, mock_llm, mock_sentiment_data, mock_financial_data,
                                  sample_company_info, sample_news):
         """Test generating a signal through the full pipeline."""

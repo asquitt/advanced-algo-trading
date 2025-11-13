@@ -88,6 +88,12 @@ class TradingExecutor:
             return None
 
         current_price = quote.get("price")
+        # Type-safe price validation
+        try:
+            current_price = float(current_price) if current_price is not None else None
+        except (ValueError, TypeError):
+            current_price = None
+
         if not current_price or current_price <= 0:
             app_logger.error(f"Invalid price for {signal.symbol}: {current_price}")
             return None
@@ -135,9 +141,13 @@ class TradingExecutor:
             )
             return None
 
-        # Calculate position size
-        account = broker.get_account()
-        portfolio_value = account.get("portfolio_value", 0)
+        # Calculate position size with error handling
+        try:
+            account = broker.get_account()
+            portfolio_value = account.get("portfolio_value", 0)
+        except Exception as e:
+            app_logger.error(f"Failed to get account info: {e}")
+            return None
 
         # Position sizing: use smaller of:
         # 1. Max position size
