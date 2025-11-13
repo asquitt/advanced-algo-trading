@@ -1,0 +1,26 @@
+# DVC parameters for experiment tracking
+# Modify these to run different experiments
+
+train:
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 100
+  validation_split: 0.2
+
+strategy:
+  fundamental_weight: 0.5
+  sentiment_weight: 0.3
+  technical_weight: 0.2
+  min_conviction_score: 0.7
+
+risk:
+  max_position_size: 10000
+  risk_per_trade: 0.02
+  max_drawdown: 0.15
+  stop_loss_pct: 0.05
+  take_profit_pct: 0.15
+
+data:
+  lookback_days: 90
+  min_volume: 1000000
+  exclude_sectors: []

@@ -1,0 +1,11 @@
+[core]
+    remote = local
+    autostage = true
+
+['remote "local"']
+    url = ./data/.dvc-storage
+
+# For production, use S3 or similar:
+# ['remote "s3"']
+#     url = s3://my-bucket/dvc-storage
+#     region = us-east-1

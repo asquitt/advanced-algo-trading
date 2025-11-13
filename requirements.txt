@@ -1,0 +1,61 @@
+# Core Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+
+# LLM APIs (Cost-efficient choices)
+groq==0.4.2  # Very fast and cheap inference
+anthropic==0.18.1  # For complex reasoning tasks only
+
+# Data Processing
+pandas==2.1.4
+numpy==1.26.3
+pyarrow==15.0.0  # For efficient parquet storage
+
+# Real-time Data Streaming
+kafka-python==2.0.2
+aiokafka==0.10.0  # Async Kafka for better performance
+
+# Market Data & Trading
+alpaca-py==0.15.0  # Paper trading API
+yfinance==0.2.35  # Free market data backup
+requests==2.31.0
+
+# MLOps
+mlflow==2.10.2
+dvc==3.43.0
+dvc-s3==3.0.1  # Optional: for S3 storage
+
+# Database
+psycopg2-binary==2.9.9  # PostgreSQL
+sqlalchemy==2.0.25
+alembic==1.13.1  # Database migrations
+redis==5.0.1  # Caching to reduce API costs
+
+# Monitoring & Logging
+prometheus-client==0.19.0
+loguru==0.7.2
+python-json-logger==2.0.7
+
+# Utilities
+python-dotenv==1.0.1
+schedule==1.2.1
+pytz==2024.1
+aiohttp==3.9.3
+httpx==0.26.0
+
+# Data Validation
+great-expectations==0.18.8
+
+# Testing
+pytest==7.4.4
+pytest-asyncio==0.23.3
+pytest-cov==4.1.0
+httpx==0.26.0  # For testing FastAPI
+
+# Development
+black==24.1.1
+flake8==7.0.0
+mypy==1.8.0
+pre-commit==3.6.0
