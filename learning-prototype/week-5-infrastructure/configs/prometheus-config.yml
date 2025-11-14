@@ -1,0 +1,77 @@
+# Prometheus Configuration for Trading System Monitoring
+
+global:
+  scrape_interval: 15s  # How frequently to scrape targets
+  evaluation_interval: 15s  # How frequently to evaluate rules
+  external_labels:
+    monitor: 'trading-monitor'
+    environment: 'development'
+
+# Alertmanager configuration (optional)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#           - 'alertmanager:9093'
+
+# Rule files for alerting
+rule_files:
+  # - "alert_rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # Trading API metrics
+  - job_name: 'trading_api'
+    scrape_interval: 10s  # More frequent scraping for API
+    static_configs:
+      - targets: ['trading_api:8000']
+        labels:
+          service: 'trading_api'
+          environment: 'development'
+    metrics_path: '/metrics'
+
+  # PostgreSQL exporter (if you add postgres_exporter)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres_exporter:9187']
+        labels:
+          service: 'postgres'
+
+  # Redis exporter (if you add redis_exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis_exporter:9121']
+        labels:
+          service: 'redis'
+
+  # Node exporter for system metrics (CPU, memory, disk)
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node_exporter:9100']
+        labels:
+          service: 'node_exporter'
+
+# Example custom metrics to track:
+#
+# Trading-specific metrics:
+# - order_count_total (counter) - Total orders placed
+# - order_latency_seconds (histogram) - Order execution latency
+# - position_value_dollars (gauge) - Current position value
+# - trade_pnl_dollars (gauge) - Profit/loss on trades
+# - api_requests_total (counter) - API requests by endpoint
+# - strategy_signals_total (counter) - Trading signals generated
+# - market_data_lag_seconds (gauge) - Market data freshness
+# - risk_metrics (gauge) - VaR, Sharpe ratio, etc.
+#
+# System metrics:
+# - cpu_usage_percent (gauge)
+# - memory_usage_bytes (gauge)
+# - db_connection_pool_size (gauge)
+# - redis_cache_hit_rate (gauge)

@@ -1,0 +1,277 @@
+{
+  "dashboard": {
+    "title": "Trading System Dashboard",
+    "tags": ["trading", "monitoring"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 0,
+    "refresh": "10s",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "type": "graph",
+        "title": "API Request Rate",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{job=\"trading_api\"}[5m])",
+            "legendFormat": "{{method}} {{endpoint}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "reqps",
+            "label": "Requests/sec"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "type": "graph",
+        "title": "API Response Time (p95)",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=\"trading_api\"}[5m]))",
+            "legendFormat": "{{endpoint}}",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Latency"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 0,
+          "y": 8
+        },
+        "type": "stat",
+        "title": "Total Orders Today",
+        "targets": [
+          {
+            "expr": "increase(order_count_total[24h])",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "orientation": "auto",
+          "textMode": "auto",
+          "colorMode": "value",
+          "graphMode": "area"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "decimals": 0
+          }
+        }
+      },
+      {
+        "id": 4,
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 8,
+          "y": 8
+        },
+        "type": "stat",
+        "title": "Current P&L",
+        "targets": [
+          {
+            "expr": "trade_pnl_dollars",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "orientation": "auto",
+          "textMode": "auto",
+          "colorMode": "value"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "currencyUSD",
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "value": null,
+                  "color": "red"
+                },
+                {
+                  "value": 0,
+                  "color": "green"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 16,
+          "y": 8
+        },
+        "type": "stat",
+        "title": "Open Positions",
+        "targets": [
+          {
+            "expr": "open_positions_count",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["lastNotNull"]
+          },
+          "orientation": "auto",
+          "textMode": "auto",
+          "colorMode": "value"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short",
+            "decimals": 0
+          }
+        }
+      },
+      {
+        "id": 6,
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 16
+        },
+        "type": "graph",
+        "title": "Order Execution Latency",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(order_latency_seconds_bucket[5m]))",
+            "legendFormat": "p50",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(order_latency_seconds_bucket[5m]))",
+            "legendFormat": "p95",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(order_latency_seconds_bucket[5m]))",
+            "legendFormat": "p99",
+            "refId": "C"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "s",
+            "label": "Latency"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 16
+        },
+        "type": "graph",
+        "title": "System Resources",
+        "targets": [
+          {
+            "expr": "process_resident_memory_bytes{job=\"trading_api\"}",
+            "legendFormat": "Memory Usage",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(process_cpu_seconds_total{job=\"trading_api\"}[5m])",
+            "legendFormat": "CPU Usage",
+            "refId": "B"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 24
+        },
+        "type": "graph",
+        "title": "Database Connection Pool",
+        "targets": [
+          {
+            "expr": "db_connection_pool_size{job=\"trading_api\"}",
+            "legendFormat": "Active Connections",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "short",
+            "label": "Connections"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 24
+        },
+        "type": "graph",
+        "title": "Redis Cache Performance",
+        "targets": [
+          {
+            "expr": "rate(redis_cache_hits_total[5m]) / (rate(redis_cache_hits_total[5m]) + rate(redis_cache_misses_total[5m]))",
+            "legendFormat": "Hit Rate",
+            "refId": "A"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "percentunit",
+            "label": "Cache Hit Rate",
+            "min": 0,
+            "max": 1
+          }
+        ]
+      }
+    ]
+  }
+}

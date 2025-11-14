@@ -1,0 +1,396 @@
+name: Advanced Algo Trading - CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'release/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  AWS_REGION: us-east-1
+  ECS_CLUSTER: algo-trading-cluster
+  ECS_SERVICE: algo-trading-service
+
+jobs:
+  # Job 1: Linting and Code Quality
+  lint:
+    name: Lint and Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black isort mypy pylint
+
+      - name: Run Black
+        run: black --check .
+
+      - name: Run isort
+        run: isort --check-only .
+
+      - name: Run Flake8
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Run MyPy
+        run: mypy . || true
+
+      - name: Run Pylint
+        run: pylint **/*.py --exit-zero
+
+  # Job 2: Unit and Integration Tests
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: lint
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-asyncio
+
+      - name: Run unit tests
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: test_db
+          DB_USER: postgres
+          DB_PASSWORD: test_password
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+        run: |
+          pytest tests/unit -v --cov=. --cov-report=xml --cov-report=term
+
+      - name: Run integration tests
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: test_db
+          DB_USER: postgres
+          DB_PASSWORD: test_password
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
+        run: |
+          pytest tests/integration -v
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+
+  # Job 3: Security Scanning
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install security tools
+        run: |
+          pip install safety bandit
+
+      - name: Run Safety (dependency check)
+        run: safety check --json || true
+
+      - name: Run Bandit (security linter)
+        run: bandit -r . -f json -o bandit-report.json || true
+
+      - name: Upload Bandit report
+        uses: actions/upload-artifact@v3
+        with:
+          name: bandit-report
+          path: bandit-report.json
+
+  # Job 4: Build and Push Docker Image
+  build:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ steps.meta.outputs.tags }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  # Job 5: Deploy to ECS (AWS)
+  deploy-ecs:
+    name: Deploy to AWS ECS
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://trading.example.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition algo-trading-task \
+            --query taskDefinition > task-definition.json
+
+      - name: Fill in new image ID in task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: algo-trading-container
+          image: ${{ needs.build.outputs.image_tag }}
+
+      - name: Deploy to Amazon ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+
+      - name: Verify deployment
+        run: |
+          aws ecs describe-services \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --services ${{ env.ECS_SERVICE }} \
+            --query 'services[0].deployments'
+
+  # Job 6: Deploy to Kubernetes
+  deploy-k8s:
+    name: Deploy to Kubernetes
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production-k8s
+      url: https://k8s.trading.example.com
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure kubectl
+        uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Update image in deployment
+        run: |
+          kubectl set image deployment/algo-trading-deployment \
+            trading-app=${{ needs.build.outputs.image_tag }} \
+            --namespace=trading \
+            --record
+
+      - name: Verify deployment
+        run: |
+          kubectl rollout status deployment/algo-trading-deployment \
+            --namespace=trading \
+            --timeout=5m
+
+      - name: Check pod health
+        run: |
+          kubectl get pods -n trading -l app=algo-trading
+
+  # Job 7: Run smoke tests
+  smoke-test:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    needs: [deploy-ecs]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install test dependencies
+        run: |
+          pip install requests pytest
+
+      - name: Run smoke tests
+        env:
+          API_URL: ${{ secrets.PRODUCTION_API_URL }}
+          API_KEY: ${{ secrets.PRODUCTION_API_KEY }}
+        run: |
+          pytest tests/smoke -v
+
+      - name: Health check
+        run: |
+          curl -f ${{ secrets.PRODUCTION_API_URL }}/health || exit 1
+
+  # Job 8: Terraform Plan (Infrastructure changes)
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terraform Init
+        working-directory: ./terraform/aws
+        run: terraform init
+
+      - name: Terraform Format Check
+        working-directory: ./terraform/aws
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        working-directory: ./terraform/aws
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: ./terraform/aws
+        run: terraform plan -out=tfplan
+
+      - name: Upload plan
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-plan
+          path: ./terraform/aws/tfplan
+
+  # Job 9: Notify on Slack
+  notify:
+    name: Notify Team
+    runs-on: ubuntu-latest
+    needs: [deploy-ecs, smoke-test]
+    if: always()
+    steps:
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: |
+            Deployment Status: ${{ job.status }}
+            Repository: ${{ github.repository }}
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        if: always()
