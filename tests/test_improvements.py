@@ -531,9 +531,9 @@ class TestPositionSizing:
         """Test consecutive losses trigger size reduction."""
         sizer = AdaptivePositionSizer()
 
-        # Create consecutive losing trades
+        # Create consecutive losing trades (need at least 10 for DEFENSIVE mode)
         losing_trades = []
-        for i in range(5):
+        for i in range(10):
             trade = Trade(
                 symbol=f"STOCK{i}",
                 side=OrderSide.BUY,
@@ -557,6 +557,7 @@ class TestPositionSizing:
 
         # Should have reduced position size due to losing streak
         assert recommendation.position_multiplier < 1.0
+        # With 10 consecutive losses and 0% win rate, should trigger DEFENSIVE mode
         assert recommendation.risk_mode in [
             RiskMode.CONSERVATIVE,
             RiskMode.DEFENSIVE,
