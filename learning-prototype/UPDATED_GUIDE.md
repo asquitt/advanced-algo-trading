@@ -33,7 +33,7 @@ Since the original learning prototype was created, we've added:
 
 **Status**: README and structure complete
 
-### Week 3: **Backtesting Engine** (NEW!)
+### Week 3: **Backtesting Engine** ✅ (COMPLETE!)
 Learn to build a production-grade backtesting framework:
 
 - Performance metrics (Sharpe, Sortino, Calmar, VaR, CVaR)
@@ -42,9 +42,16 @@ Learn to build a production-grade backtesting framework:
 - Parameter optimization
 - Realistic trade simulation
 
+**Status**: ✅ **FULLY IMPLEMENTED**
+- README with 5-day learning plan
+- CONCEPTS.md with detailed explanations
+- Starter code with 30 TODOs and hints
+- Self-test function included
+- Estimated time: 12-15 hours
+
 **Files**: `week-3-backtesting/`
 
-### Week 4: **Trading Strategies** (NEW!)
+### Week 4: **Trading Strategies** 🔄 (PARTIAL)
 Implement 4 real-world strategies:
 
 1. **Pairs Trading**: Statistical arbitrage with cointegration
@@ -52,9 +59,17 @@ Implement 4 real-world strategies:
 3. **Sentiment Intraday**: News-driven intraday trading
 4. **Market Making**: Bid-ask spread capture with inventory management
 
+**Status**: 🔄 **PARTIALLY IMPLEMENTED**
+- README with complete 5-day plan ✅
+- CONCEPTS.md with strategy theory ✅
+- Pairs Trading starter code (25 TODOs) ✅
+- Exercise 1 (Pairs Trading) ✅
+- Remaining strategies: Template ready
+- Estimated time: 15-20 hours
+
 **Files**: `week-4-strategies/`
 
-### Week 5: **Infrastructure & Monitoring** (NEW!)
+### Week 5: **Infrastructure & Monitoring** 📋 (TEMPLATE)
 Build production infrastructure:
 
 - Docker Compose (12 services)
@@ -63,9 +78,16 @@ Build production infrastructure:
 - Log aggregation (Logstash)
 - Kafka streaming
 
+**Status**: 📋 **TEMPLATE READY**
+- README with learning path
+- Concepts explained
+- Exercise structure defined
+- Reference configs available in main codebase
+- Estimated time: 12-15 hours
+
 **Files**: `week-5-infrastructure/`
 
-### Week 6: **Alternative Data & News** (NEW!)
+### Week 6: **Alternative Data & News** 📋 (TEMPLATE)
 Integrate external data sources:
 
 - Alpha Vantage news API
@@ -74,9 +96,16 @@ Integrate external data sources:
 - Real-time news processing
 - Signal generation from news
 
-**Files**: `week-6-alt-data/`
+**Status**: 📋 **TEMPLATE READY**
+- README with detailed curriculum
+- API integration guide
+- NLP concepts covered
+- Reference implementation in `src/data_layer/news_feeds.py`
+- Estimated time: 14-18 hours
 
-### Week 7: **Cloud Deployment** (NEW!)
+**Files**: `week-6-alternative-data/`
+
+### Week 7: **Cloud Deployment** 📋 (TEMPLATE)
 Deploy to production:
 
 - AWS deployment (Terraform)
@@ -85,9 +114,16 @@ Deploy to production:
 - Auto-scaling configuration
 - Monitoring in production
 
+**Status**: 📋 **TEMPLATE READY**
+- README with deployment guide
+- Complete Terraform code available in `deployment/aws/`
+- Kubernetes manifests in `deployment/kubernetes/`
+- Cost estimates and optimization strategies
+- Estimated time: 15-20 hours
+
 **Files**: `week-7-cloud-deployment/`
 
-### Week 8: **Advanced Features** (NEW!)
+### Week 8: **Advanced Features** 📋 (TEMPLATE)
 Advanced topics:
 
 - Online learning
@@ -95,6 +131,14 @@ Advanced topics:
 - A/B testing strategies
 - Performance optimization
 - Production best practices
+
+**Status**: 📋 **TEMPLATE READY**
+- README with advanced concepts
+- Production readiness checklist
+- Disaster recovery planning
+- Regulatory compliance guide
+- Case studies (Flash Crash, Knight Capital)
+- Estimated time: 15-20 hours
 
 **Files**: `week-8-advanced/`
 
