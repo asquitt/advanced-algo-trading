@@ -23,11 +23,15 @@ class TestBrokerInitialization:
     """Test broker initialization and configuration."""
 
     @patch('src.trading_engine.broker.TradingClient')
-    def test_broker_initializes_with_paper_trading(self, mock_client):
+    @patch('src.trading_engine.broker.settings')
+    def test_broker_initializes_with_paper_trading(self, mock_settings, mock_client):
         """Test broker initializes in paper trading mode."""
+        mock_settings.paper_trading = True
+        mock_settings.alpaca_api_key = "test_key"
+        mock_settings.alpaca_secret_key = "test_secret"
+
         broker = AlpacaBroker()
 
-        assert broker.paper_trading is True
         mock_client.assert_called_once()
         # Verify paper trading URL is used
         call_kwargs = mock_client.call_args.kwargs

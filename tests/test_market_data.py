@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
 
-from src.data_layer.market_data import MarketDataFetcher
+from src.data_layer.market_data import MarketDataProvider
 
 
 class TestMarketDataInitialization:
@@ -24,14 +24,14 @@ class TestMarketDataInitialization:
 
     def test_fetcher_initializes_with_default_cache(self):
         """Test fetcher initializes with caching enabled."""
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
 
         assert fetcher.cache_enabled is True
         assert hasattr(fetcher, 'cache_ttl')
 
     def test_fetcher_can_disable_cache(self):
         """Test fetcher can be initialized without cache."""
-        fetcher = MarketDataFetcher(cache_enabled=False)
+        fetcher = MarketDataProvider(cache_enabled=False)
 
         assert fetcher.cache_enabled is False
 
@@ -65,7 +65,7 @@ class TestBarDataFetching:
         }
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         bars = fetcher.get_bars("AAPL", timeframe="1Min", limit=2)
 
         assert isinstance(bars, pd.DataFrame)
@@ -82,7 +82,7 @@ class TestBarDataFetching:
         mock_bars = {'AAPL': []}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         start = datetime(2024, 1, 1)
         end = datetime(2024, 1, 31)
 
@@ -97,7 +97,7 @@ class TestBarDataFetching:
         """Test get_bars handles empty data response."""
         mock_client.return_value.get_stock_bars.return_value = {'AAPL': []}
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         bars = fetcher.get_bars("AAPL", limit=100)
 
         assert isinstance(bars, pd.DataFrame)
@@ -111,7 +111,7 @@ class TestBarDataFetching:
         ]}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
 
         # Test different timeframes
         for timeframe in ["1Min", "5Min", "15Min", "1Hour", "1Day"]:
@@ -133,7 +133,7 @@ class TestBarDataFetching:
         ]}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         bars = fetcher.get_bars("AAPL", limit=1)
 
         # Verify data integrity
@@ -161,7 +161,7 @@ class TestQuoteDataFetching:
         }
         mock_client.return_value.get_stock_latest_quote.return_value = mock_quote
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         quote = fetcher.get_latest_quote("AAPL")
 
         assert quote["symbol"] == "AAPL"
@@ -184,7 +184,7 @@ class TestQuoteDataFetching:
         }
         mock_client.return_value.get_stock_latest_quote.return_value = mock_quote
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         quote = fetcher.get_latest_quote("GOOGL")
 
         spread = quote["ask_price"] - quote["bid_price"]
@@ -195,7 +195,7 @@ class TestQuoteDataFetching:
         """Test quote fetching error handling."""
         mock_client.return_value.get_stock_latest_quote.side_effect = Exception("API Error")
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
 
         with pytest.raises(Exception, match="API Error"):
             fetcher.get_latest_quote("INVALID")
@@ -217,7 +217,7 @@ class TestTradeDataFetching:
         }
         mock_client.return_value.get_stock_latest_trade.return_value = mock_trade
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         trade = fetcher.get_latest_trade("AAPL")
 
         assert trade["symbol"] == "AAPL"
@@ -236,7 +236,7 @@ class TestTradeDataFetching:
         }
         mock_client.return_value.get_stock_trades.return_value = mock_trades
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         trades = fetcher.get_trades("AAPL", limit=3)
 
         assert len(trades) == 3
@@ -255,7 +255,7 @@ class TestDataCaching:
         ]}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher(cache_enabled=True)
+        fetcher = MarketDataProvider(cache_enabled=True)
 
         # First fetch - should hit API
         bars1 = fetcher.get_bars("AAPL", limit=1)
@@ -274,7 +274,7 @@ class TestDataCaching:
         ]}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher(cache_enabled=False)
+        fetcher = MarketDataProvider(cache_enabled=False)
 
         # Multiple fetches should all hit API
         fetcher.get_bars("AAPL", limit=1)
@@ -285,7 +285,7 @@ class TestDataCaching:
 
     def test_cache_key_generation(self):
         """Test cache key generation for different queries."""
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
 
         # Different symbols should have different cache keys
         key1 = fetcher._generate_cache_key("AAPL", "bars", timeframe="1Min")
@@ -309,7 +309,7 @@ class TestMultiSymbolFetching:
         }
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         bars = fetcher.get_bars_multi(["AAPL", "GOOGL"], limit=1)
 
         assert "AAPL" in bars
@@ -326,7 +326,7 @@ class TestMultiSymbolFetching:
         }
         mock_client.return_value.get_stock_latest_quote.return_value = mock_quotes
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         quotes = fetcher.get_quotes_multi(["AAPL", "GOOGL"])
 
         assert len(quotes) == 2
@@ -347,7 +347,7 @@ class TestDataValidation:
         ]}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         bars = fetcher.get_bars("AAPL", limit=3)
 
         # Should filter out the invalid bar
@@ -357,7 +357,7 @@ class TestDataValidation:
 
     def test_validates_price_consistency(self):
         """Test validation of price consistency (high >= low, etc.)."""
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
 
         # Valid bar
         valid = fetcher._validate_bar({
@@ -390,7 +390,7 @@ class TestErrorHandling:
 
         mock_client.return_value.get_stock_bars.side_effect = APIError("Rate limit exceeded")
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
 
         with pytest.raises(APIError, match="Rate limit"):
             fetcher.get_bars("AAPL", limit=100)
@@ -402,7 +402,7 @@ class TestErrorHandling:
 
         mock_client.return_value.get_stock_bars.side_effect = APIError("Symbol not found")
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
 
         with pytest.raises(APIError, match="Symbol not found"):
             fetcher.get_bars("INVALID123", limit=100)
@@ -414,7 +414,7 @@ class TestErrorHandling:
 
         mock_client.return_value.get_stock_bars.side_effect = requests.Timeout("Connection timeout")
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
 
         with pytest.raises(requests.Timeout):
             fetcher.get_bars("AAPL", limit=100)
@@ -428,7 +428,7 @@ class TestErrorHandling:
             {'AAPL': [Mock(timestamp=datetime.now(), open=150, high=151, low=149, close=150.5, volume=1000)]}
         ]
 
-        fetcher = MarketDataFetcher(retry_attempts=2)
+        fetcher = MarketDataProvider(retry_attempts=2)
         bars = fetcher.get_bars("AAPL", limit=1)
 
         # Should succeed on retry
@@ -447,7 +447,7 @@ class TestDataTransformation:
         ]}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         bars = fetcher.get_bars("AAPL", limit=1)
 
         assert isinstance(bars, pd.DataFrame)
@@ -463,7 +463,7 @@ class TestDataTransformation:
         ]}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         bars = fetcher.get_bars("AAPL", limit=3)
         returns = bars['close'].pct_change()
 
@@ -477,7 +477,7 @@ class TestRateLimiting:
 
     def test_tracks_request_rate(self):
         """Test that request rate is tracked."""
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
 
         assert hasattr(fetcher, 'request_count')
         assert hasattr(fetcher, 'request_window_start')
@@ -490,7 +490,7 @@ class TestRateLimiting:
         ]}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher(max_requests_per_minute=5)
+        fetcher = MarketDataProvider(max_requests_per_minute=5)
 
         # Make multiple requests
         for i in range(5):
@@ -514,7 +514,7 @@ class TestHistoricalDataRange:
         ]}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         bars = fetcher.get_bars("AAPL", days=30)
 
         assert len(bars) <= 30
@@ -528,7 +528,7 @@ class TestHistoricalDataRange:
         mock_bars = {'AAPL': []}
         mock_client.return_value.get_stock_bars.return_value = mock_bars
 
-        fetcher = MarketDataFetcher()
+        fetcher = MarketDataProvider()
         bars = fetcher.get_bars("AAPL", start=start_date, end=end_date)
 
         # Verify dates were passed to API

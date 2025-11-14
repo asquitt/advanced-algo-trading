@@ -13,17 +13,17 @@ import pytest
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime
 
-from src.trading_engine.enhanced_executor import EnhancedExecutor
+from src.trading_engine.enhanced_executor import EnhancedTradingExecutor
 from src.data_layer.models import TradingSignal, SignalType, Trade, OrderSide
 
 
-class TestEnhancedExecutorInitialization:
+class TestEnhancedTradingExecutorInitialization:
     """Test enhanced executor initialization."""
 
     def test_executor_initializes_with_default_params(self):
         """Test executor initializes with default parameters."""
         with patch('src.trading_engine.enhanced_executor.AlpacaBroker'):
-            executor = EnhancedExecutor()
+            executor = EnhancedTradingExecutor()
 
             assert hasattr(executor, 'broker')
             assert hasattr(executor, 'slippage_analyzer')
@@ -32,7 +32,7 @@ class TestEnhancedExecutorInitialization:
     def test_executor_stores_configuration(self):
         """Test executor stores configuration correctly."""
         with patch('src.trading_engine.enhanced_executor.AlpacaBroker'):
-            executor = EnhancedExecutor(
+            executor = EnhancedTradingExecutor(
                 max_slippage_bps=10.0,
                 enable_smart_routing=True
             )
@@ -65,7 +65,7 @@ class TestSignalExecution:
             status="filled"
         )
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
         signal = TradingSignal(
             symbol="AAPL",
             signal_type=SignalType.BUY,
@@ -105,7 +105,7 @@ class TestSignalExecution:
             status="filled"
         )
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
         signal = TradingSignal(
             symbol="AAPL",
             signal_type=SignalType.SELL,
@@ -129,7 +129,7 @@ class TestSignalExecution:
         mock_broker = Mock()
         mock_broker_class.return_value = mock_broker
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
         signal = TradingSignal(
             symbol="AAPL",
             signal_type=SignalType.HOLD,
@@ -185,7 +185,7 @@ class TestAdaptivePositionSizing:
             status="filled"
         )
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
         signal = TradingSignal(
             symbol="AAPL",
             signal_type=SignalType.BUY,
@@ -215,7 +215,7 @@ class TestAdaptivePositionSizing:
         mock_broker.get_position.return_value = None
         mock_broker.can_trade.return_value = (True, "OK")
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
 
         # High confidence signal
         high_conf_signal = TradingSignal(
@@ -278,7 +278,7 @@ class TestSlippageMinimization:
             status="filled"
         )
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
         signal = TradingSignal(
             symbol="AAPL",
             signal_type=SignalType.BUY,
@@ -301,7 +301,7 @@ class TestSlippageMinimization:
         mock_broker = Mock()
         mock_broker_class.return_value = mock_broker
 
-        executor = EnhancedExecutor(max_slippage_bps=10.0)
+        executor = EnhancedTradingExecutor(max_slippage_bps=10.0)
 
         # Mock slippage estimate exceeding threshold
         with patch.object(executor, 'slippage_analyzer') as mock_analyzer:
@@ -340,7 +340,7 @@ class TestSmartOrderRouting:
         mock_broker = Mock()
         mock_broker_class.return_value = mock_broker
 
-        executor = EnhancedExecutor(enable_smart_routing=True)
+        executor = EnhancedTradingExecutor(enable_smart_routing=True)
 
         # Large order that should use VWAP
         mock_broker.get_account.return_value = {"portfolio_value": 100000.0, "buying_power": 50000.0}
@@ -355,7 +355,7 @@ class TestSmartOrderRouting:
         mock_broker = Mock()
         mock_broker_class.return_value = mock_broker
 
-        executor = EnhancedExecutor(enable_smart_routing=True)
+        executor = EnhancedTradingExecutor(enable_smart_routing=True)
 
         # Time-sensitive order that should use TWAP
         # Implementation specific
@@ -376,7 +376,7 @@ class TestRiskValidation:
         }
         mock_broker.can_trade.return_value = (False, "Insufficient buying power")
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
         signal = TradingSignal(
             symbol="AAPL",
             signal_type=SignalType.BUY,
@@ -399,7 +399,7 @@ class TestRiskValidation:
         mock_broker = Mock()
         mock_broker_class.return_value = mock_broker
 
-        executor = EnhancedExecutor(max_positions=5)
+        executor = EnhancedTradingExecutor(max_positions=5)
 
         # Mock having max positions
         mock_broker.get_positions.return_value = [
@@ -421,7 +421,7 @@ class TestErrorRecovery:
 
         mock_broker.get_account.side_effect = Exception("API Error")
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
         signal = TradingSignal(
             symbol="AAPL",
             signal_type=SignalType.BUY,
@@ -450,7 +450,7 @@ class TestErrorRecovery:
             Trade(symbol="AAPL", side=OrderSide.BUY, quantity=10, entry_price=150.0, status="filled")
         ]
 
-        executor = EnhancedExecutor(retry_attempts=2)
+        executor = EnhancedTradingExecutor(retry_attempts=2)
 
         # Implementation specific - may vary
 
@@ -475,7 +475,7 @@ class TestExecutionLogging:
             status="filled"
         )
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
         signal = TradingSignal(
             symbol="AAPL",
             signal_type=SignalType.BUY,
@@ -512,7 +512,7 @@ class TestPartialFills:
             status="partially_filled"  # Partially filled
         )
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
 
         # Implementation specific - how to handle partial fills
 
@@ -526,7 +526,7 @@ class TestCostOptimization:
         mock_broker = Mock()
         mock_broker_class.return_value = mock_broker
 
-        executor = EnhancedExecutor(optimize_costs=True)
+        executor = EnhancedTradingExecutor(optimize_costs=True)
 
         # Should consider:
         # - Slippage costs
@@ -544,7 +544,7 @@ class TestMultiLegOrders:
         mock_broker = Mock()
         mock_broker_class.return_value = mock_broker
 
-        executor = EnhancedExecutor()
+        executor = EnhancedTradingExecutor()
 
         # Example: Long AAPL / Short MSFT spread
         # Implementation specific
