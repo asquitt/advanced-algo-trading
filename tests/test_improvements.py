@@ -52,7 +52,9 @@ class TestSlippageManagement:
             ask_price=150.10,
             bid_size=100,
             ask_size=100,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
+            bid_levels=[(150.00, 100), (149.99, 200), (149.98, 150)],
+            ask_levels=[(150.10, 100), (150.11, 200), (150.12, 150)]
         )
 
         # Normal market conditions
@@ -82,7 +84,9 @@ class TestSlippageManagement:
             ask_price=200.20,
             bid_size=50,
             ask_size=50,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
+            bid_levels=[(200.00, 50), (199.98, 80), (199.96, 100)],
+            ask_levels=[(200.20, 50), (200.22, 80), (200.24, 100)]
         )
 
         # Fast market - rapid price changes
@@ -116,7 +120,9 @@ class TestSlippageManagement:
             ask_price=150.10,
             bid_size=100,
             ask_size=100,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
+            bid_levels=[(150.00, 100), (149.99, 200), (149.98, 150)],
+            ask_levels=[(150.10, 100), (150.11, 200), (150.12, 150)]
         )
 
         conditions = MarketConditions(
@@ -164,7 +170,9 @@ class TestSlippageManagement:
             ask_price=150.10,
             bid_size=100,
             ask_size=100,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
+            bid_levels=[(150.00, 100), (149.99, 200), (149.98, 150)],
+            ask_levels=[(150.10, 100), (150.11, 200), (150.12, 150)]
         )
 
         conditions = MarketConditions(
@@ -399,13 +407,13 @@ class TestPositionSizing:
         # Create sample trades
         trades = [
             Trade(symbol="AAPL", side=OrderSide.BUY, quantity=10,
-                  entry_price=100.0, exit_price=110.0, status="closed",
+                  entry_price=100.0, exit_price=110.0, status="filled",
                   entry_time=datetime.now(), exit_time=datetime.now()),  # Win: +100
             Trade(symbol="MSFT", side=OrderSide.BUY, quantity=10,
-                  entry_price=200.0, exit_price=195.0, status="closed",
+                  entry_price=200.0, exit_price=195.0, status="filled",
                   entry_time=datetime.now(), exit_time=datetime.now()),  # Loss: -50
             Trade(symbol="GOOGL", side=OrderSide.BUY, quantity=10,
-                  entry_price=150.0, exit_price=160.0, status="closed",
+                  entry_price=150.0, exit_price=160.0, status="filled",
                   entry_time=datetime.now(), exit_time=datetime.now()),  # Win: +100
         ]
 
@@ -431,7 +439,7 @@ class TestPositionSizing:
         # Simulate good performance (no drawdown)
         good_trades = [
             Trade(symbol="AAPL", side=OrderSide.BUY, quantity=10,
-                  entry_price=100.0, exit_price=110.0, status="closed",
+                  entry_price=100.0, exit_price=110.0, status="filled",
                   entry_time=datetime.now(), exit_time=datetime.now()),
         ]
         good_trades[0].pnl = 100.0
@@ -451,7 +459,7 @@ class TestPositionSizing:
         # Create losing trades
         bad_trades = [
             Trade(symbol="AAPL", side=OrderSide.BUY, quantity=10,
-                  entry_price=100.0, exit_price=90.0, status="closed",
+                  entry_price=100.0, exit_price=90.0, status="filled",
                   entry_time=datetime.now(), exit_time=datetime.now()),
         ]
         bad_trades[0].pnl = -100.0
@@ -532,7 +540,7 @@ class TestPositionSizing:
                 quantity=10,
                 entry_price=100.0,
                 exit_price=90.0,
-                status="closed",
+                status="filled",
                 entry_time=datetime.now(),
                 exit_time=datetime.now()
             )
