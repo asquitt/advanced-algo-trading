@@ -1,0 +1,242 @@
+{
+  "articles": [
+    {
+      "title": "Apple Reports Record Revenue in Q4, iPhone Sales Surge",
+      "source": "Financial Times",
+      "published_at": "2024-01-15T14:30:00Z",
+      "url": "https://example.com/article1",
+      "summary": "Apple Inc. announced exceptional quarterly results today, with revenue reaching $119.6 billion, surpassing analyst expectations by 8%. The company's flagship iPhone 15 series drove a 12% increase in smartphone sales, while the services segment grew by 15% year-over-year. CEO Tim Cook highlighted strong demand in China and expressed optimism about the company's AI initiatives. Analysts have raised their price targets, with many citing Apple's robust ecosystem and growing services revenue as key growth drivers.",
+      "symbols": ["AAPL"],
+      "sentiment_score": 0.72,
+      "relevance_score": 0.95
+    },
+    {
+      "title": "Tesla Faces Major Recall Affecting 500K Vehicles",
+      "source": "Reuters",
+      "published_at": "2024-01-15T10:15:00Z",
+      "url": "https://example.com/article2",
+      "summary": "Tesla announced a significant recall affecting approximately 500,000 vehicles due to potential safety issues with the autopilot system. The recall comes after investigations by federal regulators and reports of several accidents. Tesla stock fell 7% in premarket trading following the announcement. The company stated it will release an over-the-air software update to address the issues, but concerns about production quality and regulatory scrutiny continue to weigh on investor sentiment.",
+      "symbols": ["TSLA"],
+      "sentiment_score": -0.65,
+      "relevance_score": 0.98
+    },
+    {
+      "title": "Microsoft Azure Cloud Revenue Soars 30%, Beating Estimates",
+      "source": "Bloomberg",
+      "published_at": "2024-01-15T16:00:00Z",
+      "url": "https://example.com/article3",
+      "summary": "Microsoft Corporation reported strong quarterly earnings, with Azure cloud services revenue growing 30% year-over-year, significantly exceeding analyst estimates of 25% growth. The company's AI-powered services have gained substantial traction among enterprise customers. CEO Satya Nadella emphasized Microsoft's leadership position in generative AI and cloud computing. The stock rose 5% in after-hours trading as multiple analysts raised their price targets. Commercial bookings also showed robust growth of 21%.",
+      "symbols": ["MSFT"],
+      "sentiment_score": 0.68,
+      "relevance_score": 0.92
+    },
+    {
+      "title": "Google Unveils Advanced AI Model, Competing with OpenAI",
+      "source": "TechCrunch",
+      "published_at": "2024-01-15T12:00:00Z",
+      "url": "https://example.com/article4",
+      "summary": "Alphabet Inc.'s Google announced the launch of Gemini Ultra, its most advanced AI model to date, positioning it as a direct competitor to OpenAI's GPT-4. The new model demonstrates superior performance on several benchmarks and will be integrated across Google's product suite. While the technical achievement was praised, investors remained cautious about monetization prospects and regulatory challenges. The stock traded flat following the announcement as analysts await clarity on the AI business model.",
+      "symbols": ["GOOGL"],
+      "sentiment_score": 0.15,
+      "relevance_score": 0.88
+    },
+    {
+      "title": "Amazon Faces Antitrust Investigation, Potential $10B Fine",
+      "source": "Wall Street Journal",
+      "published_at": "2024-01-15T09:30:00Z",
+      "url": "https://example.com/article5",
+      "summary": "Amazon is under formal investigation by federal regulators over alleged anti-competitive practices in its marketplace business. Sources familiar with the matter suggest the company could face fines exceeding $10 billion if found guilty. The investigation focuses on Amazon's treatment of third-party sellers and alleged preferential treatment of its own products. Amazon denied any wrongdoing and stated it will vigorously defend itself. The stock declined 4% on the news, with investors concerned about regulatory overhang.",
+      "symbols": ["AMZN"],
+      "sentiment_score": -0.58,
+      "relevance_score": 0.94
+    },
+    {
+      "title": "NVIDIA Stock Hits All-Time High on AI Chip Demand",
+      "source": "CNBC",
+      "published_at": "2024-01-15T15:30:00Z",
+      "url": "https://example.com/article6",
+      "summary": "NVIDIA Corporation shares reached a new all-time high today, driven by unprecedented demand for its AI chips. The company's H100 and upcoming B100 GPUs are sold out for the next 18 months, with major tech companies competing for supply. CEO Jensen Huang stated that the AI revolution is just beginning and NVIDIA is uniquely positioned to capitalize on this trend. Analysts increased their price targets, with several predicting continued strong growth as AI adoption accelerates across industries.",
+      "symbols": ["NVDA"],
+      "sentiment_score": 0.82,
+      "relevance_score": 0.96
+    },
+    {
+      "title": "Meta Platforms Announces 10% Workforce Reduction",
+      "source": "The Information",
+      "published_at": "2024-01-15T08:00:00Z",
+      "url": "https://example.com/article7",
+      "summary": "Meta Platforms announced plans to reduce its workforce by approximately 10%, affecting around 21,000 employees, as part of CEO Mark Zuckerberg's 'year of efficiency' initiative. The layoffs will primarily impact business and recruiting teams. While the move aims to streamline operations and reduce costs, it has raised concerns about the company's growth prospects. However, some analysts view the restructuring positively, expecting improved margins and operational efficiency. The stock showed mixed reactions in after-hours trading.",
+      "symbols": ["META"],
+      "sentiment_score": -0.12,
+      "relevance_score": 0.90
+    },
+    {
+      "title": "JPMorgan Chase Reports Strong Earnings, Raises Dividend",
+      "source": "Financial Times",
+      "published_at": "2024-01-15T13:00:00Z",
+      "url": "https://example.com/article8",
+      "summary": "JPMorgan Chase reported better-than-expected quarterly earnings, benefiting from higher interest rates and strong investment banking activity. The bank announced a 5% increase in its quarterly dividend and authorized a new $30 billion share buyback program. CEO Jamie Dimon expressed cautious optimism about the economic outlook while warning about potential recession risks. Net interest income exceeded expectations, and credit quality remained strong. The stock rose 3% following the announcement.",
+      "symbols": ["JPM"],
+      "sentiment_score": 0.54,
+      "relevance_score": 0.91
+    },
+    {
+      "title": "Apple and Tesla Partnership Rumors Drive Market Speculation",
+      "source": "MarketWatch",
+      "published_at": "2024-01-15T11:00:00Z",
+      "url": "https://example.com/article9",
+      "summary": "Unconfirmed reports of a potential partnership between Apple and Tesla sent both stocks higher in morning trading. Speculation centers around Apple's autonomous vehicle project and Tesla's expertise in electric vehicles and autonomous driving. While neither company has confirmed discussions, analysts noted that such a partnership could be transformative for both companies. However, skeptics point to the challenges of integrating two strong corporate cultures and potential antitrust concerns.",
+      "symbols": ["AAPL", "TSLA"],
+      "sentiment_score": 0.35,
+      "relevance_score": 0.65
+    },
+    {
+      "title": "Fed Officials Signal Potential Rate Cuts in 2024",
+      "source": "Reuters",
+      "published_at": "2024-01-15T14:00:00Z",
+      "url": "https://example.com/article10",
+      "summary": "Federal Reserve officials indicated that interest rate cuts could begin in mid-2024 if inflation continues to moderate. The dovish signals boosted equity markets broadly, with major indices gaining 2-3%. Technology stocks led the rally, as lower interest rates typically benefit growth companies. Bond yields declined sharply following the comments. Market participants are now pricing in three quarter-point rate cuts by the end of 2024, though Fed Chair Powell emphasized that decisions will be data-dependent.",
+      "symbols": ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA"],
+      "sentiment_score": 0.45,
+      "relevance_score": 0.75
+    },
+    {
+      "title": "Cybersecurity Breach at Major Cloud Provider Raises Concerns",
+      "source": "Bloomberg",
+      "published_at": "2024-01-15T07:30:00Z",
+      "url": "https://example.com/article11",
+      "summary": "A significant cybersecurity breach at a major cloud service provider has affected multiple enterprise customers, including some Fortune 500 companies. While the provider has not been named, industry sources suggest it could be one of the three major players: Amazon AWS, Microsoft Azure, or Google Cloud. The breach highlights ongoing security vulnerabilities in cloud infrastructure and could impact enterprise cloud adoption rates. Cybersecurity stocks rallied on the news, while cloud providers faced scrutiny.",
+      "symbols": ["AMZN", "MSFT", "GOOGL"],
+      "sentiment_score": -0.32,
+      "relevance_score": 0.70
+    },
+    {
+      "title": "NVIDIA and Microsoft Expand AI Partnership",
+      "source": "TechCrunch",
+      "published_at": "2024-01-15T15:00:00Z",
+      "url": "https://example.com/article12",
+      "summary": "NVIDIA and Microsoft announced an expanded partnership to accelerate AI development and deployment across enterprise customers. The collaboration will integrate NVIDIA's latest AI chips with Microsoft's Azure cloud platform, creating what both companies describe as the most powerful AI infrastructure available. The partnership is expected to generate billions in additional revenue for both companies. Analysts praised the strategic alignment and predicted it would strengthen both companies' competitive positions in the AI market.",
+      "symbols": ["NVDA", "MSFT"],
+      "sentiment_score": 0.76,
+      "relevance_score": 0.93
+    },
+    {
+      "title": "Oil Prices Surge on Middle East Tensions",
+      "source": "Wall Street Journal",
+      "published_at": "2024-01-15T08:30:00Z",
+      "url": "https://example.com/article13",
+      "summary": "Crude oil prices jumped 5% following escalating tensions in the Middle East, raising concerns about potential supply disruptions. Energy stocks rallied broadly, while concerns about inflation resurfaced. Economists warned that sustained high oil prices could complicate the Federal Reserve's monetary policy decisions. Some analysts predict oil could reach $100 per barrel if the situation deteriorates further. The spike in energy costs could negatively impact consumer spending and corporate profit margins.",
+      "symbols": [],
+      "sentiment_score": -0.25,
+      "relevance_score": 0.60
+    },
+    {
+      "title": "Tesla Announces New Gigafactory in Southeast Asia",
+      "source": "Reuters",
+      "published_at": "2024-01-14T16:00:00Z",
+      "url": "https://example.com/article14",
+      "summary": "Tesla revealed plans to build a new Gigafactory in Southeast Asia, with Thailand emerging as the likely location. The facility will focus on producing affordable electric vehicles for the Asian market. CEO Elon Musk stated the move is part of Tesla's strategy to achieve 20 million vehicle deliveries annually by 2030. The announcement partially offset negative sentiment from the recent recall news. Analysts view the expansion positively but note execution risks given Tesla's history of production delays.",
+      "symbols": ["TSLA"],
+      "sentiment_score": 0.42,
+      "relevance_score": 0.87
+    },
+    {
+      "title": "Apple Supplier Concerns Emerge Over iPhone 16 Production",
+      "source": "Nikkei Asia",
+      "published_at": "2024-01-14T10:00:00Z",
+      "url": "https://example.com/article15",
+      "summary": "Major Apple suppliers have reportedly encountered challenges in ramping up production for the upcoming iPhone 16, scheduled for release in September 2024. Sources indicate issues with new display technology and AI chip integration. While Apple maintains its launch timeline remains on track, some analysts worry about potential delays or supply constraints during the critical holiday season. The concerns led to a modest decline in Apple shares and raised questions about the company's innovation pipeline.",
+      "symbols": ["AAPL"],
+      "sentiment_score": -0.28,
+      "relevance_score": 0.82
+    },
+    {
+      "title": "Amazon Web Services Launches Revolutionary Quantum Computing Service",
+      "source": "TechCrunch",
+      "published_at": "2024-01-14T14:30:00Z",
+      "url": "https://example.com/article16",
+      "summary": "Amazon Web Services announced the general availability of its quantum computing service, Amazon Braket, featuring partnerships with leading quantum hardware providers. The service allows researchers and businesses to experiment with quantum algorithms and applications. While commercial quantum computing applications remain years away, the move demonstrates AWS's commitment to emerging technologies. The announcement was well-received by the scientific community, though financial impact is expected to be minimal in the near term.",
+      "symbols": ["AMZN"],
+      "sentiment_score": 0.38,
+      "relevance_score": 0.75
+    },
+    {
+      "title": "Google Faces $5 Billion Privacy Lawsuit",
+      "source": "The Guardian",
+      "published_at": "2024-01-14T09:00:00Z",
+      "url": "https://example.com/article17",
+      "summary": "Google is facing a $5 billion class-action lawsuit alleging the company illegally tracked users' internet activity even when using 'private' browsing mode. The lawsuit, filed by users claiming privacy violations, could affect millions of Chrome users. Google denied the allegations and stated it will vigorously defend against the claims. Legal experts suggest the case could set important precedents for digital privacy. The stock experienced minor volatility but remained largely stable as investors view this as one of many ongoing legal challenges.",
+      "symbols": ["GOOGL"],
+      "sentiment_score": -0.35,
+      "relevance_score": 0.80
+    },
+    {
+      "title": "Microsoft Teams Surpasses 500 Million Monthly Active Users",
+      "source": "The Verge",
+      "published_at": "2024-01-14T13:00:00Z",
+      "url": "https://example.com/article18",
+      "summary": "Microsoft announced that Teams has surpassed 500 million monthly active users, solidifying its position as a leader in enterprise collaboration software. The milestone represents 100 million user growth in just one year, driven by hybrid work adoption and AI-powered features. Microsoft's integration of Copilot AI assistant into Teams has received positive feedback from enterprise customers. The news reinforces Microsoft's competitive position against Slack and Zoom, supporting the company's strong enterprise software narrative.",
+      "symbols": ["MSFT"],
+      "sentiment_score": 0.62,
+      "relevance_score": 0.86
+    },
+    {
+      "title": "Semiconductor Shortage Easing, Impacting NVIDIA Pricing Power",
+      "source": "Bloomberg",
+      "published_at": "2024-01-14T11:30:00Z",
+      "url": "https://example.com/article19",
+      "summary": "Industry reports suggest the global semiconductor shortage is finally easing, with chip inventories normalizing across most categories. While this is positive for many industries, analysts warn it could reduce NVIDIA's pricing power for AI chips in the medium term. However, NVIDIA's technological lead and surging AI demand are expected to offset any pricing pressure. Some investors took profits following the news, but the overall impact on NVIDIA's long-term outlook appears limited.",
+      "symbols": ["NVDA"],
+      "sentiment_score": -0.08,
+      "relevance_score": 0.77
+    },
+    {
+      "title": "Meta's Reality Labs Division Shows Signs of Progress",
+      "source": "The Information",
+      "published_at": "2024-01-14T15:00:00Z",
+      "url": "https://example.com/article20",
+      "summary": "Meta Platforms' Reality Labs division, responsible for metaverse and VR/AR development, showed improved metrics in the latest quarter despite continued losses. Quest headset sales increased 40% year-over-year, and developer engagement on the platform reached new highs. While the division still lost $4 billion in the quarter, the trajectory is improving. CEO Mark Zuckerberg reiterated his long-term commitment to the metaverse vision. Investors remain divided on whether the massive investment will eventually pay off.",
+      "symbols": ["META"],
+      "sentiment_score": 0.22,
+      "relevance_score": 0.84
+    }
+  ],
+  "metadata": {
+    "total_articles": 20,
+    "date_range": {
+      "start": "2024-01-14T07:30:00Z",
+      "end": "2024-01-15T16:00:00Z"
+    },
+    "sources": [
+      "Financial Times",
+      "Reuters",
+      "Bloomberg",
+      "TechCrunch",
+      "Wall Street Journal",
+      "CNBC",
+      "The Information",
+      "MarketWatch",
+      "Nikkei Asia",
+      "The Guardian",
+      "The Verge"
+    ],
+    "symbols_covered": [
+      "AAPL",
+      "TSLA",
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "NVDA",
+      "META",
+      "JPM"
+    ],
+    "avg_sentiment": 0.18,
+    "sentiment_distribution": {
+      "very_positive": 4,
+      "positive": 7,
+      "neutral": 3,
+      "negative": 4,
+      "very_negative": 2
+    }
+  }
+}
