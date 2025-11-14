@@ -1,0 +1,263 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "execution-quality",
+    "title": "Execution Quality",
+    "tags": ["trading", "execution"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 0,
+    "refresh": "5s",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "type": "timeseries",
+        "title": "Order Fill Rate",
+        "targets": [
+          {
+            "expr": "rate(orders_filled_total[5m]) / rate(orders_submitted_total[5m]) * 100",
+            "legendFormat": "Fill Rate",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 80},
+                {"color": "green", "value": 95}
+              ]
+            },
+            "unit": "percent",
+            "max": 100,
+            "min": 0
+          }
+        }
+      },
+      {
+        "id": 2,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "type": "timeseries",
+        "title": "Slippage (bps)",
+        "targets": [
+          {
+            "expr": "avg(slippage_bps) by (symbol)",
+            "legendFormat": "{{symbol}}",
+            "refId": "A"
+          },
+          {
+            "expr": "avg(slippage_bps)",
+            "legendFormat": "Average",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "custom": {
+              "fillOpacity": 10,
+              "lineWidth": 2
+            },
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "gridPos": {"h": 6, "w": 6, "x": 0, "y": 8},
+        "type": "stat",
+        "title": "Avg Order Latency",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(order_latency_seconds_bucket[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 0.1},
+                {"color": "red", "value": 0.5}
+              ]
+            },
+            "unit": "s"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "gridPos": {"h": 6, "w": 6, "x": 6, "y": 8},
+        "type": "stat",
+        "title": "P95 Order Latency",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(order_latency_seconds_bucket[5m]))",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 0.2},
+                {"color": "red", "value": 1.0}
+              ]
+            },
+            "unit": "s"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "gridPos": {"h": 6, "w": 6, "x": 12, "y": 8},
+        "type": "stat",
+        "title": "Orders Rejected (5m)",
+        "targets": [
+          {
+            "expr": "increase(orders_rejected_total[5m])",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 1},
+                {"color": "red", "value": 5}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "gridPos": {"h": 6, "w": 6, "x": 18, "y": 8},
+        "type": "stat",
+        "title": "VWAP Deviation",
+        "targets": [
+          {
+            "expr": "avg(abs(execution_price - vwap_price) / vwap_price) * 100",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 0.1},
+                {"color": "red", "value": 0.5}
+              ]
+            },
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 7,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14},
+        "type": "timeseries",
+        "title": "Order Types Distribution",
+        "targets": [
+          {
+            "expr": "sum by (order_type) (rate(orders_total[5m]))",
+            "legendFormat": "{{order_type}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "bars",
+              "fillOpacity": 70,
+              "stacking": {"mode": "percent"}
+            }
+          }
+        }
+      },
+      {
+        "id": 8,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14},
+        "type": "timeseries",
+        "title": "Execution Algorithm Performance",
+        "targets": [
+          {
+            "expr": "avg by (algorithm) (execution_quality_score)",
+            "legendFormat": "{{algorithm}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "max": 100,
+            "min": 0,
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 22},
+        "type": "timeseries",
+        "title": "Market Impact Cost",
+        "targets": [
+          {
+            "expr": "market_impact_cost_bps",
+            "legendFormat": "Market Impact",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 10,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 22},
+        "type": "table",
+        "title": "Execution Statistics by Symbol",
+        "targets": [
+          {
+            "expr": "execution_stats",
+            "refId": "A",
+            "format": "table"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {},
+              "renameByName": {
+                "symbol": "Symbol",
+                "fill_rate": "Fill Rate",
+                "avg_slippage": "Avg Slippage (bps)",
+                "total_volume": "Volume"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "overwrite": true
+}

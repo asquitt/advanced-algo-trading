@@ -1,0 +1,220 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "trading-overview",
+    "title": "Trading Overview",
+    "tags": ["trading", "overview"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 0,
+    "refresh": "5s",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "type": "timeseries",
+        "title": "Portfolio Value",
+        "targets": [
+          {
+            "expr": "portfolio_value_dollars",
+            "legendFormat": "Portfolio Value",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "custom": {
+              "axisCenteredZero": false,
+              "axisLabel": "Value ($)",
+              "axisPlacement": "auto",
+              "fillOpacity": 10,
+              "gradientMode": "none",
+              "lineWidth": 2,
+              "pointSize": 5
+            },
+            "unit": "currencyUSD"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "type": "timeseries",
+        "title": "Daily P&L",
+        "targets": [
+          {
+            "expr": "rate(portfolio_pnl_dollars[1d])",
+            "legendFormat": "Daily P&L",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "custom": {
+              "fillOpacity": 20,
+              "lineWidth": 2
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "green", "value": 0}
+              ]
+            },
+            "unit": "currencyUSD"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "gridPos": {"h": 6, "w": 6, "x": 0, "y": 8},
+        "type": "stat",
+        "title": "Total Trades (24h)",
+        "targets": [
+          {
+            "expr": "increase(trades_total[24h])",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 50},
+                {"color": "red", "value": 100}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 4,
+        "gridPos": {"h": 6, "w": 6, "x": 6, "y": 8},
+        "type": "stat",
+        "title": "Win Rate",
+        "targets": [
+          {
+            "expr": "winning_trades_total / trades_total * 100",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 40},
+                {"color": "green", "value": 50}
+              ]
+            },
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "gridPos": {"h": 6, "w": 6, "x": 12, "y": 8},
+        "type": "stat",
+        "title": "Open Positions",
+        "targets": [
+          {
+            "expr": "open_positions_count",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"}
+          }
+        }
+      },
+      {
+        "id": 6,
+        "gridPos": {"h": 6, "w": 6, "x": 18, "y": 8},
+        "type": "stat",
+        "title": "Buying Power",
+        "targets": [
+          {
+            "expr": "account_buying_power_dollars",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 10000},
+                {"color": "green", "value": 50000}
+              ]
+            },
+            "unit": "currencyUSD"
+          }
+        }
+      },
+      {
+        "id": 7,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14},
+        "type": "table",
+        "title": "Recent Trades",
+        "targets": [
+          {
+            "expr": "trades_by_symbol",
+            "refId": "A",
+            "format": "table"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14},
+        "type": "timeseries",
+        "title": "Signal Confidence Distribution",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(signal_confidence_bucket[5m])) by (le))",
+            "legendFormat": "95th percentile",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.50, sum(rate(signal_confidence_bucket[5m])) by (le))",
+            "legendFormat": "Median",
+            "refId": "B"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 22},
+        "type": "timeseries",
+        "title": "Trade Volume by Symbol",
+        "targets": [
+          {
+            "expr": "sum by (symbol) (rate(trades_total[5m]))",
+            "legendFormat": "{{symbol}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "bars",
+              "fillOpacity": 50,
+              "stacking": {"mode": "normal"}
+            }
+          }
+        }
+      }
+    ]
+  },
+  "overwrite": true
+}

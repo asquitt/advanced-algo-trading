@@ -1,0 +1,260 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "risk-management",
+    "title": "Risk Management",
+    "tags": ["trading", "risk"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 0,
+    "refresh": "10s",
+    "panels": [
+      {
+        "id": 1,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "type": "timeseries",
+        "title": "Portfolio Drawdown",
+        "targets": [
+          {
+            "expr": "portfolio_drawdown_percent",
+            "legendFormat": "Current Drawdown",
+            "refId": "A"
+          },
+          {
+            "expr": "max_drawdown_percent",
+            "legendFormat": "Max Drawdown",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "custom": {
+              "fillOpacity": 20,
+              "lineWidth": 2
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": -5},
+                {"color": "orange", "value": -10},
+                {"color": "red", "value": -15}
+              ]
+            },
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "type": "timeseries",
+        "title": "Value at Risk (VaR)",
+        "targets": [
+          {
+            "expr": "portfolio_var_95_percent",
+            "legendFormat": "VaR 95%",
+            "refId": "A"
+          },
+          {
+            "expr": "portfolio_cvar_95_percent",
+            "legendFormat": "CVaR 95%",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "palette-classic"},
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "gridPos": {"h": 6, "w": 6, "x": 0, "y": 8},
+        "type": "gauge",
+        "title": "Risk Level",
+        "targets": [
+          {
+            "expr": "risk_score",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "max": 100,
+            "min": 0,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 50},
+                {"color": "orange", "value": 75},
+                {"color": "red", "value": 90}
+              ]
+            },
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "gridPos": {"h": 6, "w": 6, "x": 6, "y": 8},
+        "type": "stat",
+        "title": "Current Risk Mode",
+        "targets": [
+          {
+            "expr": "risk_mode",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {"type": "value", "options": {"0": {"text": "NORMAL", "color": "green"}}},
+              {"type": "value", "options": {"1": {"text": "CONSERVATIVE", "color": "yellow"}}},
+              {"type": "value", "options": {"2": {"text": "DEFENSIVE", "color": "orange"}}},
+              {"type": "value", "options": {"3": {"text": "HALT", "color": "red"}}}
+            ]
+          }
+        }
+      },
+      {
+        "id": 5,
+        "gridPos": {"h": 6, "w": 6, "x": 12, "y": 8},
+        "type": "stat",
+        "title": "Consecutive Losses",
+        "targets": [
+          {
+            "expr": "consecutive_losses",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 3},
+                {"color": "orange", "value": 5},
+                {"color": "red", "value": 10}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 6,
+        "gridPos": {"h": 6, "w": 6, "x": 18, "y": 8},
+        "type": "stat",
+        "title": "Sharpe Ratio (30d)",
+        "targets": [
+          {
+            "expr": "sharpe_ratio_30d",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "color": {"mode": "thresholds"},
+            "decimals": 2,
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 0.5},
+                {"color": "green", "value": 1.0}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 7,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14},
+        "type": "timeseries",
+        "title": "Position Exposure by Symbol",
+        "targets": [
+          {
+            "expr": "sum by (symbol) (position_value_dollars)",
+            "legendFormat": "{{symbol}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "drawStyle": "bars",
+              "fillOpacity": 60,
+              "stacking": {"mode": "normal"}
+            },
+            "unit": "currencyUSD"
+          }
+        }
+      },
+      {
+        "id": 8,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14},
+        "type": "timeseries",
+        "title": "Portfolio Volatility",
+        "targets": [
+          {
+            "expr": "portfolio_volatility_percent",
+            "legendFormat": "Volatility",
+            "refId": "A"
+          },
+          {
+            "expr": "avg_over_time(portfolio_volatility_percent[7d])",
+            "legendFormat": "7-day Average",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 22},
+        "type": "timeseries",
+        "title": "Kelly Criterion Position Sizing",
+        "targets": [
+          {
+            "expr": "kelly_fraction",
+            "legendFormat": "Kelly Fraction",
+            "refId": "A"
+          },
+          {
+            "expr": "actual_position_size",
+            "legendFormat": "Actual Size",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit"
+          }
+        }
+      },
+      {
+        "id": 10,
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 22},
+        "type": "table",
+        "title": "Risk Metrics Summary",
+        "targets": [
+          {
+            "expr": "risk_metrics",
+            "refId": "A",
+            "format": "table"
+          }
+        ]
+      }
+    ]
+  },
+  "overwrite": true
+}
